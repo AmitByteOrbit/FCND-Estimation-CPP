@@ -12,7 +12,10 @@ I solved this one by importing the CSV files into Excel and applying the mean, s
    </br></br>
    <img src="images/sensor2.jpg" width="600"/>
 </p>
-**Screenshot and console output:**</br>
+
+**Screenshot and console output:**
+
+</br>
 <p align="center">
    <img src="images/task1_img.jpg" width="300"/>
    <img src="images/task1_success.jpg" width="600"/>
