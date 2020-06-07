@@ -7,13 +7,16 @@ This has been an awesome project, especially incorportating the controller from 
 ### Step 1: Sensor Noise ###
 I solved this one by importing the CSV files into Excel and applying the mean, standard deviation and variance formulas to the data to get the result. See image below. The rounded up values in `SimulatedSensors.txt` matched the result.
 
-![sensor 1](images/sensor1.jpg)
-![sensor 2](images/sensor2.jpg)
-
-The result:
-![task1 screenshot](images/task1_img.jpg)
-![task1 console output](images/task1_success.jpg)
-
+<p align="center">
+   <img src="images/sensor1.jpg" width="600"/>
+   </br></br>
+   <img src="images/sensor2.jpg" width="600"/>
+</p>
+Screenshot and console output:</br>
+<p align="center">
+   <img src="images/task1_img.jpg" width="400"/>
+   <img src="images/task1_success.jpg" width="600"/>
+</p>
 ### Step 2: Attitude Estimation ###
 
 Now let's look at the first step to our state estimation: including information from our IMU.  In this step, you will be improving the complementary filter-type attitude filter with a better rate gyro attitude integration scheme.
