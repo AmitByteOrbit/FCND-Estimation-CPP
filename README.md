@@ -12,29 +12,38 @@ I solved this one by importing the CSV files into Excel and applying the mean, s
    </br></br>
    <img src="images/sensor2.jpg" width="600"/>
 </p>
-Screenshot and console output:</br>
+**Screenshot and console output:**</br>
 <p align="center">
-   <img src="images/task1_img.jpg" width="400"/>
+   <img src="images/task1_img.jpg" width="300"/>
    <img src="images/task1_success.jpg" width="600"/>
 </p>
+
 ### Step 2: Attitude Estimation ###
+This step required the implementation of a complementary filter. I chose to use the suggested Quaternions rather than the Eulers that were presented in the lectures to avoid creating another rotation Matrix. The built in `IntegrateBodyRate` function was very helpful as was the ability to easily convert back to Euler angles. My code follows. Credit to section 7.1.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for explaining the implementation.
 
-Now let's look at the first step to our state estimation: including information from our IMU.  In this step, you will be improving the complementary filter-type attitude filter with a better rate gyro attitude integration scheme.
+```C++
+   //use the state to define a quaternion
+	Quaternion<float> qt = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
 
-1. Run scenario `07_AttitudeEstimation`.  For this simulation, the only sensor used is the IMU and noise levels are set to 0 (see `config/07_AttitudeEstimation.txt` for all the settings for this simulation).  There are two plots visible in this simulation.
-   - The top graph is showing errors in each of the estimated Euler angles.
-   - The bottom shows the true Euler angles and the estimates.
-Observe that there’s quite a bit of error in attitude estimation.
+	//Integrate the measurements
+	qt.IntegrateBodyRate((V3D)gyro, dtIMU);
 
-2. In `QuadEstimatorEKF.cpp`, you will see the function `UpdateFromIMU()` contains a complementary filter-type attitude filter.  To reduce the errors in the estimated attitude (Euler Angles), implement a better rate gyro attitude integration scheme.  You should be able to reduce the attitude errors to get within 0.1 rad for each of the Euler angles, as shown in the screenshot below.
+	//Convert back to Euler
+	V3F predictedAttitude = (V3F)qt.ToEulerRPY();
+	float predictedRoll = predictedAttitude.x;
+	float predictedPitch = predictedAttitude.y;
+	ekfState(6) = predictedAttitude.z;
 
-![attitude example](images/attitude-screenshot.png)
-
-In the screenshot above the attitude estimation using linear scheme (left) and using the improved nonlinear scheme (right). Note that Y axis on error is much greater on left.
-
-***Success criteria:*** *Your attitude estimator needs to get within 0.1 rad for each of the Euler angles for at least 3 seconds.*
-
-**Hint: see section 7.1.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on a good non-linear complimentary filter for attitude using quaternions.**
+	// normalize yaw to -pi .. pi
+	if (ekfState(6) > F_PI) ekfState(6) -= 2.f * F_PI;
+	if (ekfState(6) < -F_PI) ekfState(6) += 2.f * F_PI;
+```
+<br/><br/>
+**Screenshot and console output**:</br>
+<p align="center">
+   <img src="images/step2_graph.jpg") width="300"/>
+   <img src="images/step2_console.jpg") width="600"/>
+</p>
 
 
 ### Step 3: Prediction Step ###
