@@ -190,40 +190,15 @@ Then it was time to tune the process noise model in `QuadEstimatorEKF.txt` one m
 
 
 ### Step 6: Adding Your Controller ###
+Now for the big moment - replacing the controller with my controller from the previous project. I must admit - I was nervous and excited to see what would happen. I grabbed my controller and settings (`QuadController.cpp` and `QuadControlParams.txt`) from my [repo](https://github.com/AmitByteOrbit/FCND-Controls.git). I them renamed the project files with the suffix `_original` (which came in handy for the Step 5 write-up) and then dropped in my files. It wasn't a disaster but I needed to spend some time tuning the parameters in  `QuadControlParams.txt` for a while. The end result:
 
-Up to this point, we have been working with a controller that has been relaxed to work with an estimated state instead of a real state.  So now, you will see how well your controller performs and de-tune your controller accordingly.
+<p align="center">
+   <img src="images/my_quad.gif" width="600"/>
+</p>
 
-1. Replace `QuadController.cpp` with the controller you wrote in the last project.
+<p align="center">
+   <img src="images/myquade_c.jpg" width="600"/>
+</p>
 
-2. Replace `QuadControlParams.txt` with the control parameters you came up with in the last project.
+Thank you!
 
-3. Run scenario `11_GPSUpdate`. If your controller crashes immediately do not panic. Flying from an estimated state (even with ideal sensors) is very different from flying with ideal pose. You may need to de-tune your controller. Decrease the position and velocity gains (we’ve seen about 30% detuning being effective) to stabilize it.  Your goal is to once again complete the entire simulation cycle with an estimated position error of < 1m.
-
-**Hint: you may find it easiest to do your de-tuning as a 2 step process by reverting to ideal sensors and de-tuning under those conditions first.**
-
-***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
-
-
-## Tips and Tricks ##
-
- - When it comes to transposing matrices, `.transposeInPlace()` is the function you want to use to transpose a matrix
-
- - The [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) document contains a helpful mathematical breakdown of the core elements on your estimator
-
-## Submission ##
-
-For this project, you will need to submit:
-
- - a completed estimator that meets the performance criteria for each of the steps by submitting:
-   - `QuadEstimatorEKF.cpp`
-   - `config/QuadEstimatorEKF.txt`
-
- - a re-tuned controller that, in conjunction with your tuned estimator, is capable of meeting the criteria laid out in Step 6 by submitting:
-   - `QuadController.cpp`
-   - `config/QuadControlParams.txt`
-
- - a write up addressing all the points of the rubric
-
-## Authors ##
-
-Thanks to Fotokite for the initial development of the project code and simulator.
