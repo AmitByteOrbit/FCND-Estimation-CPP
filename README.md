@@ -81,7 +81,7 @@ There are two parts to this implemenation. First we had to setup Rbg Prime based
    <img src="images/rbg_prime.jpg" width="600"/>
 </p>
 
-The code to implement this was pretty straight forward but it was worth triple checking as I did make an error with on the the entries. Luckily it was corrected before causing any problems.
+The code to implement this was pretty straight forward but it was worth triple checking as I did make an error with one of the entries. Luckily it was corrected before causing any problems.
 
 ```C++
 	float sinPhi = sin(roll);
@@ -109,6 +109,7 @@ Next it was time to implement the `Predict` function to predict the current cova
    <img src="images/jacobian.jpg" width="400"/>
 </p>
 
+My code solution as described above:<br/></br>
 
 ```C++
 //add accelerations to a vector to enable matrix operations
@@ -127,7 +128,7 @@ Next it was time to implement the `Predict` function to predict the current cova
 	//Equation to update the covariance
 	ekfCov = gPrime * ekfCov * gPrime.transpose() + Q;
 ```
-
+<br/> **The resulting graph:**
 <p align="center">
    <img src="images/covariance.gif" width="300"/>
 </p>
