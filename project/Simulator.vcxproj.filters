@@ -273,7 +273,6 @@
     <Text Include="..\config\06_SensorNoise.txt" />
     <Text Include="..\config\07_AttitudeEstimation.txt" />
     <Text Include="..\config\08_PredictState.txt" />
-    <Text Include="..\config\09_PredictionCovariance.txt" />
     <Text Include="..\config\10_MagUpdate.txt" />
     <Text Include="..\config\11_GPSUpdate.txt" />
     <Text Include="..\config\LastScenario.txt" />
