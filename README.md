@@ -1,7 +1,8 @@
 # Estimation Project #
 
 ## My Solution ##
-This has been an awesome project, especially incorportating the controller from the previous project. Learning the math was challenging but implementing it in the project frame was reasonable - a good challenge. Tuning two sets of parameters was also new and interesting.
+This is the readme for my project submission. The original project README has be moved to Project - RM.md for reference. 
+This has been a challenging project and I enjoyed incorportating the controller from the previous project at the end. The math was challenging at times during the lessons but implementing it in the project framework was a great exercise.
 
 
 ### Step 1: Sensor Noise ###
@@ -17,7 +18,7 @@ I solved this one by importing the CSV files into Excel and applying the mean, s
 
 </br>
 <p align="center">
-   <img src="images/task1_img.jpg" width="300"/>
+   <img src="images/task1_img.jpg" width="300"/><br/>
    <img src="images/task1_success.jpg" width="600"/>
 </p>
 
@@ -44,12 +45,40 @@ This step required the implementation of a complementary filter. I chose to use 
 <br/><br/>
 **Screenshot and console output**:</br>
 <p align="center">
-   <img src="images/step2_graph.jpg") width="300"/>
+   <img src="images/step2_graph.jpg") width="300"/></br>
    <img src="images/step2_console.jpg") width="600"/>
 </p>
 
 
 ### Step 3: Prediction Step ###
+There were two parts to this step.
+
+1. Implement the `PredictState` function.
+This was not too difficult. The aim was to integrate the velocity and acceleration to get the predicted position and velocity. The `Rotate_BtoI` function made life a lot easier for converting from the body to the inertial frame. 
+
+```c++
+	//Integrate position
+	predictedState(0) += predictedState[3] * dt;
+	predictedState(1) += predictedState[4]* dt;
+	predictedState(2) += predictedState[5] * dt; 
+	
+	//Integrate velocity in the Inertial Frame
+	V3F intertialAccel = attitude.Rotate_BtoI(accel);
+	predictedState(3) += intertialAccel.x * dt;
+	predictedState(4) += intertialAccel.y * dt;
+	predictedState(5) += ((float)intertialAccel.z - (float) CONST_GRAVITY) * dt;
+```
+
+This produced the desired output:
+<p align="center">
+   <img src="images/predict_state_g.jpg" width="300"/>
+</p>
+
+2. Covariance prediction
+
+<p align="center">
+   <img src="images/covariance.gif" width="300"/>
+</p>
 
 In this next step you will be implementing the prediction step of your filter.
 
