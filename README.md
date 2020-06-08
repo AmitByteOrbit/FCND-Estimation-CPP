@@ -1,7 +1,8 @@
 # Estimation Project #
 
 ## My Solution ##
-This has been an awesome project, especially incorportating the controller from the previous project. Learning the math was challenging but implementing it in the project frame was reasonable - a good challenge. Tuning two sets of parameters was also new and interesting.
+This is the readme for my project submission. The original project README has be moved to Project - RM.md for reference. 
+This has been a challenging project and I enjoyed incorportating the controller from the previous project at the end. The math was challenging at times during the lessons but implementing it in the project framework was a great exercise.
 
 
 ### Step 1: Sensor Noise ###
@@ -12,32 +13,72 @@ I solved this one by importing the CSV files into Excel and applying the mean, s
    </br></br>
    <img src="images/sensor2.jpg" width="600"/>
 </p>
-Screenshot and console output:</br>
+
+**Screenshot and console output:**
+
+</br>
 <p align="center">
-   <img src="images/task1_img.jpg" width="400"/>
+   <img src="images/task1_img.jpg" width="300"/><br/>
    <img src="images/task1_success.jpg" width="600"/>
 </p>
+
 ### Step 2: Attitude Estimation ###
+This step required the implementation of a complementary filter. I chose to use the suggested Quaternions rather than the Eulers that were presented in the lectures to avoid creating another rotation Matrix. The built in `IntegrateBodyRate` function was very helpful as was the ability to easily convert back to Euler angles. My code follows. Credit to section 7.1.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for explaining the implementation.
 
-Now let's look at the first step to our state estimation: including information from our IMU.  In this step, you will be improving the complementary filter-type attitude filter with a better rate gyro attitude integration scheme.
+```C++
+   //use the state to define a quaternion
+	Quaternion<float> qt = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
 
-1. Run scenario `07_AttitudeEstimation`.  For this simulation, the only sensor used is the IMU and noise levels are set to 0 (see `config/07_AttitudeEstimation.txt` for all the settings for this simulation).  There are two plots visible in this simulation.
-   - The top graph is showing errors in each of the estimated Euler angles.
-   - The bottom shows the true Euler angles and the estimates.
-Observe that there’s quite a bit of error in attitude estimation.
+	//Integrate the measurements
+	qt.IntegrateBodyRate((V3D)gyro, dtIMU);
 
-2. In `QuadEstimatorEKF.cpp`, you will see the function `UpdateFromIMU()` contains a complementary filter-type attitude filter.  To reduce the errors in the estimated attitude (Euler Angles), implement a better rate gyro attitude integration scheme.  You should be able to reduce the attitude errors to get within 0.1 rad for each of the Euler angles, as shown in the screenshot below.
+	//Convert back to Euler
+	V3F predictedAttitude = (V3F)qt.ToEulerRPY();
+	float predictedRoll = predictedAttitude.x;
+	float predictedPitch = predictedAttitude.y;
+	ekfState(6) = predictedAttitude.z;
 
-![attitude example](images/attitude-screenshot.png)
-
-In the screenshot above the attitude estimation using linear scheme (left) and using the improved nonlinear scheme (right). Note that Y axis on error is much greater on left.
-
-***Success criteria:*** *Your attitude estimator needs to get within 0.1 rad for each of the Euler angles for at least 3 seconds.*
-
-**Hint: see section 7.1.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on a good non-linear complimentary filter for attitude using quaternions.**
+	// normalize yaw to -pi .. pi
+	if (ekfState(6) > F_PI) ekfState(6) -= 2.f * F_PI;
+	if (ekfState(6) < -F_PI) ekfState(6) += 2.f * F_PI;
+```
+<br/><br/>
+**Screenshot and console output**:</br>
+<p align="center">
+   <img src="images/step2_graph.jpg") width="300"/></br>
+   <img src="images/step2_console.jpg") width="600"/>
+</p>
 
 
 ### Step 3: Prediction Step ###
+There were two parts to this step.
+
+1. Implement the `PredictState` function.
+This was not too difficult. The aim was to integrate the velocity and acceleration to get the predicted position and velocity. The `Rotate_BtoI` function made life a lot easier for converting from the body to the inertial frame. 
+
+```c++
+	//Integrate position
+	predictedState(0) += predictedState[3] * dt;
+	predictedState(1) += predictedState[4]* dt;
+	predictedState(2) += predictedState[5] * dt; 
+	
+	//Integrate velocity in the Inertial Frame
+	V3F intertialAccel = attitude.Rotate_BtoI(accel);
+	predictedState(3) += intertialAccel.x * dt;
+	predictedState(4) += intertialAccel.y * dt;
+	predictedState(5) += ((float)intertialAccel.z - (float) CONST_GRAVITY) * dt;
+```
+
+This produced the desired output:
+<p align="center">
+   <img src="images/predict_state_g.jpg" width="300"/>
+</p>
+
+2. Covariance prediction
+
+<p align="center">
+   <img src="images/covariance.gif" width="300"/>
+</p>
 
 In this next step you will be implementing the prediction step of your filter.
 
