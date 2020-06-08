@@ -1,7 +1,7 @@
 # Estimation Project #
 
 ## My Solution ##
-This is the readme for my project submission. The original project README has be moved to Project - RM.md for reference. 
+This is the README for my project submission. The original project README has be moved to Project - RM.md for reference. 
 This has been a challenging project and I enjoyed incorportating the controller from the previous project at the end. The math was challenging at times during the lessons but implementing it in the project framework was a great exercise.
 
 
