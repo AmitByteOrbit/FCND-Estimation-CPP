@@ -193,11 +193,11 @@ Then it was time to tune the process noise model in `QuadEstimatorEKF.txt` one m
 Now for the big moment - replacing the controller with my controller from the previous project. I must admit - I was nervous and excited to see what would happen. I grabbed my controller and settings (`QuadController.cpp` and `QuadControlParams.txt`) from my [repo](https://github.com/AmitByteOrbit/FCND-Controls.git). I them renamed the project files with the suffix `_original` (which came in handy for the Step 5 write-up) and then dropped in my files. It wasn't a disaster but I needed to spend some time tuning the parameters in  `QuadControlParams.txt` for a while. The end result:
 
 <p align="center">
-   <img src="images/my_quad.gif" width="600"/>
+   <img src="images/myquad.gif" width="600"/>
 </p>
 
 <p align="center">
-   <img src="images/myquade_c.jpg" width="600"/>
+   <img src="images/myquad_c.jpg" width="600"/>
 </p>
 
 Thank you!
