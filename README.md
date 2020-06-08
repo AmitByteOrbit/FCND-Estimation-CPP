@@ -167,7 +167,7 @@ Lastly, for this step, it was time to tune the parameter `QYawStd`  in `QuadEsti
 ### Step 5: Closed Loop + GPS Update ###
 Similar to the Magnetometer update, the GPS update calls the `Update(z, hPrime, R_GPS, zFromX)`. `R_GPS` is provided and `z` is setup from the GPS measurements vectors `pos` and `vel`. I coded hPrime as the identity matrix below and `zFromX` from the state vector `ekfState`.
 <p align="center">
-   <img src="images/hprime_mag.jpg" width="300"/>
+   <img src="images/hprime_gps.jpg" width="300"/>
 </p>
 
 My code to implement the above:<br/>
