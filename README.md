@@ -154,7 +154,7 @@ My code to implement the above:<br/>
 	if (estimated_err < -F_PI) zFromX(0) -= 2.f * F_PI;
 ```
 <br/><br/>
-Lastly, for this step, it was time to tune the parameter `QYawStd`.<br/><br/>
+Lastly, for this step, it was time to tune the parameter `QYawStd`  in `QuadEstimatorEKF.txt`.<br/><br/>
 **Resulting graph and console output:**
 <p align="center">
    <img src="images/mag_update_g.jpg" width="600"/>
@@ -165,28 +165,29 @@ Lastly, for this step, it was time to tune the parameter `QYawStd`.<br/><br/>
 
 
 ### Step 5: Closed Loop + GPS Update ###
+Similar to the Magnetometer update, the GPS update calls the `Update(z, hPrime, R_GPS, zFromX)`. `R_GPS` is provided and `z` is setup from the GPS measurements vectors `pos` and `vel`. I coded hPrime as the identity matrix below and `zFromX` from the state vector `ekfState`.
+<p align="center">
+   <img src="images/hprime_mag.jpg" width="300"/>
+</p>
 
-1. Run scenario `11_GPSUpdate`.  At the moment this scenario is using both an ideal estimator and and ideal IMU.  Even with these ideal elements, watch the position and velocity errors (bottom right). As you see they are drifting away, since GPS update is not yet implemented.
+My code to implement the above:<br/>
 
-2. Let's change to using your estimator by setting `Quad.UseIdealEstimator` to 0 in `config/11_GPSUpdate.txt`.  Rerun the scenario to get an idea of how well your estimator work with an ideal IMU.
-
-3. Now repeat with realistic IMU by commenting out these lines in `config/11_GPSUpdate.txt`:
+```C++
+	for (int i = 0; i < 6; i++) {
+		hPrime(i, i) = 1;
+		zFromX(i) = ekfState(i);
+	}
 ```
-#SimIMU.AccelStd = 0,0,0
-#SimIMU.GyroStd = 0,0,0
-```
+<br/><br/>
+Then it was time to tune the process noise model in `QuadEstimatorEKF.txt` one more time :)!<br/><br/>
+**Resulting graph and console output:**
+<p align="center">
+   <img src="images/gps_update_g.jpg" width="600"/>
+</p>
+<p align="center">
+   <img src="images/gps_update_c.jpg" width="600"/>
+</p>
 
-4. Tune the process noise model in `QuadEstimatorEKF.txt` to try to approximately capture the error you see with the estimated uncertainty (standard deviation) of the filter.
-
-5. Implement the EKF GPS Update in the function `UpdateFromGPS()`.
-
-6. Now once again re-run the simulation.  Your objective is to complete the entire simulation cycle with estimated position error of < 1m (you’ll see a green box over the bottom graph if you succeed).  You may want to try experimenting with the GPS update parameters to try and get better performance.
-
-***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
-
-**Hint: see section 7.3.1 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the GPS update.**
-
-At this point, congratulations on having a working estimator!
 
 ### Step 6: Adding Your Controller ###
 
