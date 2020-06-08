@@ -78,7 +78,7 @@ This produced the desired output:
 There are two parts to this implemenation. First we had to setup Rbg Prime based on the following matrix:
 
 <p align="center">
-   <img src="images/rbg_prime.jpg" width="400"/>
+   <img src="images/rbg_prime.jpg" width="600"/>
 </p>
 
 The code to implement this was pretty straight forward but it was worth triple checking as I did make an error with on the the entries. Luckily it was corrected before causing any problems.
