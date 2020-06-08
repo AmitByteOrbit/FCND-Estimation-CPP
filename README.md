@@ -75,6 +75,58 @@ This produced the desired output:
 </p>
 
 2. Covariance prediction
+There are two parts to this implemenation. First we had to setup Rbg Prime based on the following matrix:
+
+<p align="center">
+   <img src="images/rbg_prime.jpg" width="400"/>
+</p>
+
+The code to implement this was pretty straight forward but it was worth triple checking as I did make an error with on the the entries. Luckily it was corrected before causing any problems.
+
+```C++
+	float sinPhi = sin(roll);
+	float cosPhi = cos(roll);
+
+	float sinTheta = sin(pitch);
+	float cosTheta = cos(pitch);
+	
+	float sinPsi = sin(yaw);
+	float cosPsi = cos(yaw);
+
+	RbgPrime(0, 0) = -cosTheta * sinPsi;
+	RbgPrime(0, 1) = -sinPhi * sinTheta * sinPsi - cosPhi * cosPsi;
+	RbgPrime(0, 2) = -cosPhi * sinTheta * sinPsi + sinPhi * cosPsi;
+
+	RbgPrime(1, 0) = cosTheta * cosPsi;
+	RbgPrime(1, 1) = sinPhi * sinTheta * cosPsi - cosPhi * sinPsi;
+	RbgPrime(1, 2) = cosPhi * sinTheta * cosPsi + sinPhi * sinPsi;
+```
+
+Next it was time to implement the `Predict` function to predict the current covariance forward by dt using the current accelerations and body rates as input. This required implementing the jacobian (gPrime) and then plugging in all of the variables into the covariance formula.
+
+`gPrime` matrix:
+<p align="center">
+   <img src="images/jacobian.jpg" width="400"/>
+</p>
+
+
+```C++
+//add accelerations to a vector to enable matrix operations
+	VectorXf accelVector(3);
+	accelVector(0) = accel.x;
+	accelVector(1) = accel.y;
+	accelVector(2) = accel.z - (float)CONST_GRAVITY;
+
+	gPrime(0, 3) = dt;
+	gPrime(1, 4) = dt;
+	gPrime(2, 5) = dt;
+	gPrime(3, 6) = RbgPrime.row(0).dot(accelVector) * dt;
+	gPrime(4, 6) = RbgPrime.row(1).dot(accelVector) * dt;
+	gPrime(5, 6) = RbgPrime.row(2).dot(accelVector) * dt;
+
+	//Equation to update the covariance
+	ekfCov = gPrime * ekfCov * gPrime.transpose() + Q;
+```
 
 <p align="center">
    <img src="images/covariance.gif" width="300"/>
